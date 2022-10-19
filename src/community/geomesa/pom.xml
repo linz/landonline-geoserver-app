@@ -38,7 +38,7 @@ application directory.
 
         <!-- environment-dependent versions -->
         <zookeeper.version>3.4.5</zookeeper.version>
-        <accumulo.version>1.5.1</accumulo.version>
+        <accumulo.version>2.0.0</accumulo.version>
         <hadoop.version>2.2.0</hadoop.version>
 
         <!-- logging properties
@@ -48,7 +48,7 @@ application directory.
         <slf4j.version>1.7.5</slf4j.version>
         <scalalogging.version>1.1.0</scalalogging.version>
 
-        <avro.version>1.7.5</avro.version>
+        <avro.version>1.11.0</avro.version>
     </properties>
 
 
@@ -131,7 +131,7 @@ application directory.
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-client</artifactId>
-            <version>2.2.0</version>
+            <version>3.2.3</version>
         </dependency>
         <dependency>
             <groupId>org.apache.wicket</groupId>
