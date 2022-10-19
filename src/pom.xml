@@ -1666,7 +1666,10 @@
 
     <pluginManagement>
       <plugins>
-        <!-- core org.apache.maven.plugins -->
+        <plugin>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>3.3.1</version>
+        </plugin>  <!-- core org.apache.maven.plugins -->
         <plugin>
           <artifactId>maven-assembly-plugin</artifactId>
           <version>3.2.0</version>
