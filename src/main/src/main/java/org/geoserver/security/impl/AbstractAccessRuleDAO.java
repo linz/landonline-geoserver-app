@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.geoserver.config.GeoServerDataDirectory;
@@ -97,7 +97,7 @@ public abstract class AbstractAccessRuleDAO<R extends Comparable<R>> {
      *
      * @return true if the set did not contain the rule already, false otherwise
      */
-    public boolean addRule(R rule) {
+    public synchronized boolean addRule(R rule) {
         lastModified = System.currentTimeMillis();
         return rules.add(rule);
     }
@@ -114,7 +114,7 @@ public abstract class AbstractAccessRuleDAO<R extends Comparable<R>> {
     }
 
     /** Removes the rule from rule set */
-    public boolean removeRule(R rule) {
+    public synchronized boolean removeRule(R rule) {
         lastModified = System.currentTimeMillis();
         return rules.remove(rule);
     }
@@ -132,7 +132,7 @@ public abstract class AbstractAccessRuleDAO<R extends Comparable<R>> {
     }
 
     /** Writes the rules back to file system */
-    public void storeRules() throws IOException {
+    public synchronized void storeRules() throws IOException {
         // turn back the users into a users map
         Properties p = toProperties();
 
@@ -141,22 +141,21 @@ public abstract class AbstractAccessRuleDAO<R extends Comparable<R>> {
         try (OutputStream os = propFile.out()) {
             p.store(os, null);
             lastModified = System.currentTimeMillis();
+            // avoid unnecessary reloads, the file just got fully written
+            if (watcher != null) watcher.setKnownLastModified(lastModified);
         } catch (Exception e) {
             if (e instanceof IOException) throw (IOException) e;
-            else
-                throw (IOException)
-                        new IOException("Could not write rules to " + propertyFileName)
-                                .initCause(e);
+            else throw new IOException("Could not write rules to " + propertyFileName, e);
         }
     }
 
-    /** Checks the property file is up to date, eventually rebuilds the tree */
+    /** Checks the property file is up-to-date, eventually rebuilds the tree */
     protected void checkPropertyFile(boolean force) {
         try {
             if (rules == null || force) {
                 // no security folder, let's work against an empty properties then
                 if (securityDir == null || securityDir.getType() == Type.UNDEFINED) {
-                    this.rules = new TreeSet<>();
+                    this.rules = new ConcurrentSkipListSet<>();
                 } else {
                     // no security config, let's work against an empty properties then
                     Resource layers = securityDir.get(propertyFileName);
@@ -171,16 +170,20 @@ public abstract class AbstractAccessRuleDAO<R extends Comparable<R>> {
                     }
 
                     if (layers.getType() == Type.UNDEFINED) {
-                        this.rules = new TreeSet<>();
+                        this.rules = new ConcurrentSkipListSet<>();
                     } else {
                         // ok, something is there, let's load it
                         watcher = new PropertyFileWatcher(layers);
-                        loadRules(watcher.getProperties());
+                        synchronized (this) {
+                            loadRules(watcher.getProperties());
+                        }
                     }
                 }
                 lastModified = System.currentTimeMillis();
             } else if (isModified()) {
-                loadRules(watcher.getProperties());
+                synchronized (this) {
+                    loadRules(watcher.getProperties());
+                }
                 lastModified = System.currentTimeMillis();
             }
         } catch (Exception e) {

@@ -135,7 +135,7 @@
     <eclipse.emf.version>2.15.0</eclipse.emf.version>
     <jackson1.version>1.9.13</jackson1.version>
     <jackson2.version>2.13.2</jackson2.version>
-    <jackson2.databind.version>2.13.2.1</jackson2.databind.version>
+    <jackson2.databind.version>2.13.4.1</jackson2.databind.version>
     <compress-lzf.version>1.0.3</compress-lzf.version>
     <marlin.version>0.9.3</marlin.version>
     <postgresql.jdbc.version>42.4.1</postgresql.jdbc.version>
@@ -791,7 +791,7 @@
       <dependency>
         <groupId>org.codehaus.jettison</groupId>
         <artifactId>jettison</artifactId>
-        <version>1.4.1</version>
+        <version>1.5.1</version>
       </dependency>
       <dependency>
         <groupId>lucene</groupId>
@@ -1209,7 +1209,7 @@
       <dependency>
         <groupId>com.fasterxml.woodstox</groupId>
         <artifactId>woodstox-core</artifactId>
-        <version>6.2.6</version>
+        <version>6.4.0</version>
         <!-- match with jackson2.databind.version above -->
       </dependency>
 
