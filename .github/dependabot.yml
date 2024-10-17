@@ -1,0 +1,11 @@
+version: 2
+
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: daily
+    ignore:
+      - dependency-name: bsfishy/pip-action
+      - dependency-name: m-kuhn/backport
+      - dependency-name: stcarolas/setup-maven
