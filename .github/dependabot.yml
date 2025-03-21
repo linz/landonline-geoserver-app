@@ -1,0 +1,11 @@
+version: 2
+
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: daily
+    ignore:
+      - github_action_from_unverified_creator_used: bsfishy/pip-action
+      - github_action_from_unverified_creator_used: m-kuhn/backport
+      - github_action_from_unverified_creator_used: stcarolas/setup-maven
